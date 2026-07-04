@@ -1,189 +1,297 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nyx</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #090b0f;
-      --panel: #111720;
-      --panel-2: #151d27;
-      --line: #2a3443;
-      --text: #f4f7fb;
-      --muted: #9aa8b8;
-      --amber: #f7b955;
-      --cyan: #60d5e8;
-      --green: #7ee39f;
-      --red: #ff6b6b;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font: 15px/1.45 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    header {
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 22px;
-      border-bottom: 1px solid var(--line);
-      background: #0c1016;
-    }
-    .brand {
-      font-size: 18px;
-      font-weight: 750;
-      letter-spacing: 0;
-    }
-    .status {
-      color: var(--muted);
-      font-size: 13px;
-    }
-    main {
-      display: grid;
-      grid-template-columns: minmax(260px, 0.9fr) minmax(360px, 1.3fr) minmax(280px, 1fr);
-      gap: 1px;
-      min-height: calc(100vh - 56px);
-      background: var(--line);
-    }
-    section {
-      background: var(--panel);
-      padding: 22px;
-      min-width: 0;
-    }
-    h1, h2, h3, p { margin-top: 0; }
-    h2 {
-      font-size: 13px;
-      text-transform: uppercase;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      margin-bottom: 16px;
-    }
-    .scenario-list {
-      display: grid;
-      gap: 10px;
-    }
-    button {
-      appearance: none;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      color: var(--text);
-      background: var(--panel-2);
-      padding: 12px;
-      text-align: left;
-      cursor: pointer;
-      font: inherit;
-    }
-    button:hover,
-    button.active {
-      border-color: var(--cyan);
-    }
-    .kicker {
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .title {
-      font-size: 30px;
-      line-height: 1.05;
-      margin: 8px 0 12px;
-    }
-    .muted { color: var(--muted); }
-    .meter {
-      height: 12px;
-      border: 1px solid var(--line);
-      background: #0b0f15;
-      margin: 8px 0 20px;
-    }
-    .meter > div {
-      height: 100%;
-      width: 42%;
-      background: linear-gradient(90deg, var(--red), var(--amber), var(--green));
-    }
-    .state-card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 18px;
-      background: #0d131b;
-    }
-    .state {
-      color: var(--amber);
-      font-size: 34px;
-      font-weight: 800;
-      line-height: 1;
-      margin-bottom: 14px;
-    }
-    ul {
-      padding-left: 18px;
-      margin-bottom: 0;
-    }
-    li { margin: 8px 0; }
-    .forbidden {
-      color: var(--red);
-    }
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 13px;
-      white-space: pre-wrap;
-      color: #c4cfdb;
-      background: #0a0e14;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 14px;
-      overflow: auto;
-    }
-    @media (max-width: 980px) {
-      main { grid-template-columns: 1fr; }
-      section { min-height: auto; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nyx D4D Console</title>
+<style>
+  :root {
+    --bg:#000; --panel:#060b08; --panel2:#0c1410; --line:#173524;
+    --fg:#f4fff8; --muted:#7e9487; --ok:#00ff66; --warn:#d9b84f;
+    --err:#ff4f64; --accent:#00ff66; --accent2:#dfffea; --cyan:#a7ffd0;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(0,255,102,.12), transparent 28rem),
+      linear-gradient(180deg, #020402 0%, #000 38%, #020402 100%);
+    color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+  }
+  header {
+    padding:18px 22px 0; border-bottom:1px solid var(--line);
+    background:rgba(0,0,0,.78); backdrop-filter:blur(14px);
+    position:sticky; top:0; z-index:10;
+  }
+  .header-row { display:flex; align-items:flex-start; gap:18px; justify-content:space-between; }
+  .eyebrow {
+    color:var(--accent); font:11px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    letter-spacing:.08em; text-transform:uppercase; margin-bottom:6px;
+  }
+  h1 { margin:0; font-size:22px; letter-spacing:0; }
+  .sub { color:var(--muted); font-size:12px; margin-top:4px; max-width:780px; line-height:1.45; }
+  .pill {
+    display:inline-flex; align-items:center; gap:6px; padding:5px 9px;
+    border:1px solid var(--line); border-radius:999px; background:var(--panel2);
+    color:var(--accent2); font-size:12px; white-space:nowrap;
+  }
+  .tabs { display:flex; gap:8px; padding-top:16px; overflow-x:auto; }
+  .tab {
+    appearance:none; border:1px solid var(--line); border-bottom:0; border-radius:8px 8px 0 0;
+    background:#030604; color:var(--muted); min-width:126px; padding:10px 12px;
+    display:grid; gap:3px; text-align:left; cursor:pointer;
+  }
+  .tab strong { color:inherit; font-size:13px; }
+  .tab span { color:var(--muted); font-size:11px; }
+  .tab.active {
+    background:linear-gradient(180deg, rgba(0,255,102,.18), rgba(6,11,8,.94));
+    border-color:#2aff82; color:var(--fg); box-shadow:0 -8px 24px rgba(0,255,102,.12);
+  }
+  main { padding:14px 16px 24px; }
+  .strip {
+    display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-bottom:12px;
+  }
+  .metric {
+    border:1px solid var(--line); background:rgba(6,11,8,.82); border-radius:8px;
+    padding:10px; min-height:62px;
+  }
+  .metric-label { color:var(--muted); font-size:10px; margin-bottom:6px; text-transform:uppercase; }
+  .metric-value { color:var(--fg); font:15px/1.15 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  .metric-note { color:var(--muted); font-size:11px; line-height:1.25; margin-top:5px; }
+  .view { display:none; }
+  .view.active { display:block; }
+  .grid {
+    display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  }
+  .panel-grid {
+    display:grid; grid-template-columns:minmax(320px,1.15fr) minmax(280px,.85fr); gap:14px;
+  }
+  .panel, .card {
+    border:1px solid var(--line); background:rgba(6,11,8,.82); border-radius:8px;
+    min-width:0; overflow:hidden;
+  }
+  .panel { padding:14px; }
+  .panel.wide { grid-column:1 / -1; }
+  .panel-kicker {
+    color:var(--accent); font:11px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    text-transform:uppercase; margin-bottom:8px;
+  }
+  .panel-title { margin:0 0 10px; font-size:17px; }
+  .panel-copy { color:var(--muted); font-size:13px; line-height:1.55; margin:0; }
+  .card-head {
+    padding:8px 10px; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:7px; min-width:0;
+  }
+  .title { font-weight:700; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .node { color:var(--muted); font-size:10px; margin-left:auto; white-space:nowrap; }
+  .gate {
+    color:var(--accent); border:1px solid #1d6c3a; background:#06150d;
+    padding:2px 5px; border-radius:5px; font-size:10px; white-space:nowrap;
+  }
+  .hint { padding:7px 10px; color:var(--muted); font-size:11px; line-height:1.35; border-bottom:1px solid var(--line); }
+  .hud-preview {
+    min-height:420px; border:1px solid #1f5e37; border-radius:8px; position:relative;
+    background:
+      linear-gradient(rgba(0,255,102,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,102,.07) 1px, transparent 1px),
+      radial-gradient(circle at 50% 50%, rgba(0,255,102,.12), transparent 18rem),
+      #010302;
+    background-size:28px 28px, 28px 28px, auto, auto;
+    overflow:hidden;
+  }
+  .device-hero {
+    position:absolute; inset:0; width:100%; height:100%; object-fit:contain;
+    padding:26px 22px 118px; filter:drop-shadow(0 22px 36px rgba(0,0,0,.72));
+  }
+  .scanline {
+    position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(180deg, transparent, rgba(0,255,102,.08), transparent);
+    mix-blend-mode:screen; opacity:.55;
+  }
+  .compass {
+    position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    width:min(520px, calc(100% - 32px)); text-align:center; color:var(--accent2);
+    font:12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    border-top:1px solid rgba(0,255,102,.5); padding-top:8px;
+  }
+  .hud-card {
+    position:absolute; right:16px; bottom:16px; width:min(320px, calc(100% - 32px));
+    border:1px solid rgba(0,255,102,.55); border-radius:8px; background:rgba(0,20,9,.78);
+    padding:12px; color:var(--accent2);
+  }
+  .hud-state { color:var(--warn); font-size:28px; font-weight:800; line-height:1; margin:6px 0 8px; }
+  .mini-map {
+    position:absolute; left:14px; bottom:14px; width:170px; height:128px;
+    border:1px solid rgba(0,255,102,.55); border-radius:8px; background:rgba(0,20,9,.72);
+    color:var(--accent2); padding:10px; font:11px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  .mini-arrow { color:#ffad32; font-size:28px; line-height:1; margin-top:8px; }
+  button {
+    border:0; background:var(--accent); color:#001b0b; padding:7px 10px;
+    font-weight:700; border-radius:6px; cursor:pointer; font-size:12px;
+  }
+  button.secondary { background:#101711; color:var(--fg); border:1px solid var(--line); }
+  button.secondary.active { border-color:#2aff82; color:var(--accent2); box-shadow:0 0 0 1px rgba(0,255,102,.25) inset; }
+  .scenario-list { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 10px; }
+  .meter {
+    height:12px; border:1px solid var(--line); background:#010302; border-radius:999px;
+    overflow:hidden; margin:10px 0 14px;
+  }
+  .meter > div { height:100%; width:42%; background:linear-gradient(90deg, var(--err), var(--warn), var(--ok)); }
+  .log {
+    min-height:176px; overflow:auto; border:1px solid #102018; border-radius:8px;
+    background:#010302; padding:10px; color:var(--accent2);
+    font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    white-space:pre-wrap; word-break:break-word;
+  }
+  .rule {
+    display:grid; grid-template-columns:20px 1fr; gap:8px; padding:9px 0;
+    border-bottom:1px solid rgba(23,53,36,.75); color:var(--muted); font-size:13px; line-height:1.45;
+  }
+  .rule:last-child { border-bottom:0; }
+  .badge-ok { color:var(--ok); }
+  .badge-warn { color:var(--warn); }
+  .badge-err { color:var(--err); }
+  ul { margin:8px 0 0; padding-left:18px; color:var(--muted); font-size:13px; line-height:1.55; }
+  li { margin:5px 0; }
+  @media (max-width:900px) {
+    .header-row, .panel-grid { display:block; }
+    .pill { margin-top:12px; }
+    .strip { grid-template-columns:1fr; }
+    .hud-preview { min-height:520px; }
+    .device-hero { padding:30px 12px 210px; }
+    .mini-map { top:236px; bottom:auto; }
+    .hud-card { left:14px; right:14px; width:auto; }
+  }
+</style>
 </head>
 <body>
   <header>
-    <div class="brand">Nyx</div>
-    <div class="status">Local-first orientation drill · no GPS · no comms · no cloud</div>
+    <div class="header-row">
+      <div>
+        <div class="eyebrow">NYX / D4D LIVE CONSOLE</div>
+        <h1>Denied Signal Orientation Drill</h1>
+        <div class="sub">기존 콘솔형 디자인 언어는 유지하되, 내부명·회사명·구체 장비·훈련 절차 단서를 제거한 공개용 데모입니다. Nyx는 약한 증거를 확신으로 바꾸지 않는 방향 재정렬 인터페이스입니다.</div>
+      </div>
+      <div class="pill"><span class="badge-ok">●</span> LOCAL DEMO · PUBLIC SAFE</div>
+    </div>
+    <nav class="tabs" aria-label="Nyx console views">
+      <button class="tab active" data-view="context"><strong>Context</strong><span>why this drill exists</span></button>
+      <button class="tab" data-view="cards"><strong>Drill Cards</strong><span>action under uncertainty</span></button>
+      <button class="tab" data-view="boundary"><strong>Boundary</strong><span>what Nyx does not claim</span></button>
+    </nav>
   </header>
+
   <main>
-    <section>
-      <h2>Scenario</h2>
-      <div id="scenarioList" class="scenario-list"></div>
-    </section>
-
-    <section>
-      <div class="kicker">Denied Environment</div>
-      <h1 id="scenarioTitle" class="title">Loading...</h1>
-      <p id="scenarioSummary" class="muted"></p>
-
-      <h2>Confidence</h2>
-      <div class="meter" aria-label="route confidence">
-        <div id="meterFill"></div>
+    <section class="strip" aria-label="operating constraints">
+      <div class="metric">
+        <div class="metric-label">Navigation</div>
+        <div class="metric-value">GPS DENIED</div>
+        <div class="metric-note">위치 확정이 아니라 방향 재정렬을 우선합니다.</div>
       </div>
-
-      <div class="state-card">
-        <div id="state" class="state">HOLD</div>
-        <p id="why"></p>
-        <h2>Next</h2>
-        <ul id="next"></ul>
+      <div class="metric">
+        <div class="metric-label">Network</div>
+        <div class="metric-value">COMMS SPARSE</div>
+        <div class="metric-note">짧은 현장 카드가 긴 설명보다 먼저 나옵니다.</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Decision Rule</div>
+        <div class="metric-value">HOLD / REALIGN</div>
+        <div class="metric-note">불확실하면 단정하지 않고 재확인 동작을 제안합니다.</div>
       </div>
     </section>
 
-    <section>
-      <h2>Do Not Claim</h2>
-      <ul id="forbidden" class="forbidden"></ul>
+    <section id="context" class="view active">
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-head">
+            <span class="gate">HUD</span>
+            <span class="title">Nyx Field Console</span>
+            <span class="node">public demo</span>
+          </div>
+          <div class="hint">지도·통신·센서가 완전하지 않은 환경에서 확신 대신 행동 가능한 다음 확인점을 보여주는 화면입니다.</div>
+          <div class="hud-preview">
+            <img class="device-hero" src="/demo/assets/nyx-main.png" alt="Nyx on-device AI concept render">
+            <div class="scanline" aria-hidden="true"></div>
+            <div class="compass">W · 285 · 300 · 315 · N · 030 · 045 · 060 · E</div>
+            <div class="mini-map">
+              ROUTE MEMORY<br>
+              A1 → C2 → R<br>
+              <div class="mini-arrow">↱</div>
+              RE-ALIGN LEFT
+            </div>
+            <div class="hud-card">
+              <div class="eyebrow">ACTION CARD</div>
+              <div class="hud-state">REALIGN</div>
+              <div class="panel-copy">마지막 확실 지점으로 되돌아가 짧은 관측 루프를 반복합니다. Nyx는 진입 허가나 위협 식별을 대신하지 않습니다.</div>
+            </div>
+          </div>
+        </div>
 
-      <h2 style="margin-top:28px">Raw Drill Card</h2>
-      <pre id="raw" class="mono"></pre>
+        <div class="panel">
+          <div class="panel-kicker">problem frame</div>
+          <h2 class="panel-title">막힌 공간, 끊긴 신호, 빠른 오판</h2>
+          <p class="panel-copy">베트남전의 지하 터널 대응, 북한의 땅굴 전술, 우크라이나 전쟁의 참호전과 전자전은 같은 질문을 남깁니다. 현장 팀이 정보가 부족한 상태에서 어떻게 과신 없이 다음 행동을 정할 수 있는가.</p>
+          <div class="rule"><span class="badge-ok">01</span><span>확실한 것과 추정한 것을 분리합니다.</span></div>
+          <div class="rule"><span class="badge-warn">02</span><span>경로 확신이 낮으면 전진보다 재정렬을 먼저 제안합니다.</span></div>
+          <div class="rule"><span class="badge-err">03</span><span>표적화, 자율 통제, 전술 지시는 범위 밖으로 둡니다.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cards" class="view">
+      <div class="panel-grid">
+        <div class="panel">
+          <div class="panel-kicker">scenario selector</div>
+          <h2 class="panel-title">Drill Cards</h2>
+          <div id="scenarioList" class="scenario-list"></div>
+          <div class="meter" aria-label="route confidence">
+            <div id="meterFill"></div>
+          </div>
+          <div class="log" id="raw">loading...</div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-kicker">current card</div>
+          <h2 id="scenarioTitle" class="panel-title">Loading...</h2>
+          <p id="scenarioSummary" class="panel-copy"></p>
+          <div class="hud-state" id="state">HOLD</div>
+          <p id="why" class="panel-copy"></p>
+          <div class="rule"><span class="badge-ok">→</span><span><strong>Next</strong><ul id="next"></ul></span></div>
+          <div class="rule"><span class="badge-err">×</span><span><strong>Do not claim</strong><ul id="forbidden"></ul></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="boundary" class="view">
+      <div class="grid">
+        <div class="panel">
+          <div class="panel-kicker">public boundary</div>
+          <h2 class="panel-title">Nyx가 하지 않는 것</h2>
+          <div class="rule"><span class="badge-err">×</span><span>실전 배치 시스템이라고 주장하지 않습니다.</span></div>
+          <div class="rule"><span class="badge-err">×</span><span>군사 작전, 표적화, 교전, 진입 허가를 조언하지 않습니다.</span></div>
+          <div class="rule"><span class="badge-err">×</span><span>구체 장비 구성, 모델명, 테스트 절차를 공개하지 않습니다.</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-kicker">what remains</div>
+          <h2 class="panel-title">남기는 것</h2>
+          <p class="panel-copy">공개 버전은 문제의 중요성, 제한 환경의 UX 원칙, 그리고 확신이 낮을 때의 행동 카드 형식을 보여줍니다. 기술 구현의 핵심 단서보다 판단 경계와 데모 감각을 우선합니다.</p>
+        </div>
+        <div class="panel wide">
+          <div class="panel-kicker">console log</div>
+          <div class="log">[nyx] design system: restored from D4D console language
+[nyx] brand surface: Nyx only
+[nyx] public safety: no internal names, no hardware model clues, no training procedure
+[nyx] claim boundary: orientation drill, not operational guidance</div>
+        </div>
+      </div>
     </section>
   </main>
 
   <script>
+    const tabs = document.querySelectorAll(".tab");
+    const views = document.querySelectorAll(".view");
     const scenarioList = document.querySelector("#scenarioList");
     const scenarioTitle = document.querySelector("#scenarioTitle");
     const scenarioSummary = document.querySelector("#scenarioSummary");
@@ -194,8 +302,19 @@
     const forbidden = document.querySelector("#forbidden");
     const raw = document.querySelector("#raw");
 
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((item) => item.classList.toggle("active", item === tab));
+        views.forEach((view) => view.classList.toggle("active", view.id === tab.dataset.view));
+      });
+    });
+
+    function asList(items) {
+      return items.map((item) => `<li>${item}</li>`).join("");
+    }
+
     function renderScenario(scenario, index) {
-      document.querySelectorAll("button").forEach((button, i) => {
+      document.querySelectorAll(".scenario-list button").forEach((button, i) => {
         button.classList.toggle("active", i === index);
       });
       scenarioTitle.textContent = scenario.title;
@@ -203,23 +322,26 @@
       meterFill.style.width = `${Math.max(5, Math.min(100, scenario.route_confidence * 100))}%`;
       state.textContent = scenario.card.status;
       why.textContent = scenario.card.why;
-      next.innerHTML = scenario.card.next_actions.map(item => `<li>${item}</li>`).join("");
-      forbidden.innerHTML = scenario.card.forbidden_actions.map(item => `<li>${item}</li>`).join("");
+      next.innerHTML = asList(scenario.card.next_actions);
+      forbidden.innerHTML = asList(scenario.card.forbidden_actions);
       raw.textContent = JSON.stringify(scenario, null, 2);
     }
 
     fetch("/api/scenarios")
-      .then(response => response.json())
-      .then(payload => {
+      .then((response) => response.json())
+      .then((payload) => {
         payload.scenarios.forEach((scenario, index) => {
           const button = document.createElement("button");
-          button.innerHTML = `<strong>${scenario.title}</strong><br><span class="muted">${scenario.card.status}</span>`;
+          button.className = "secondary";
+          button.innerHTML = `<strong>${scenario.title}</strong><br><span>${scenario.card.status}</span>`;
           button.addEventListener("click", () => renderScenario(scenario, index));
           scenarioList.appendChild(button);
         });
         renderScenario(payload.scenarios[0], 0);
+      })
+      .catch(() => {
+        raw.textContent = "scenario cards unavailable";
       });
   </script>
 </body>
 </html>
-
