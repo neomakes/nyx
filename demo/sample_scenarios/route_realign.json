@@ -1,0 +1,28 @@
+{
+  "id": "route-realign",
+  "title": "Last Checkpoint Drift",
+  "summary": "The route is active, but the expected checkpoint is not verified and similar landmarks are repeating.",
+  "route_confidence": 0.38,
+  "signals": {
+    "gps": "unavailable",
+    "comms": "unavailable",
+    "cloud": "unavailable",
+    "landmarks": "ambiguous",
+    "last_verified_checkpoint": "stale"
+  },
+  "card": {
+    "status": "RE-ORIENT / REALIGN",
+    "why": "The route cannot be confirmed from the current evidence. The last reliable checkpoint is stale and the observed landmarks are ambiguous.",
+    "next_actions": [
+      "Recover the last verified checkpoint before moving deeper.",
+      "Match two independent landmarks before upgrading confidence.",
+      "Log the mismatch and prepare handoff if the route still conflicts."
+    ],
+    "forbidden_actions": [
+      "Do not declare the target reached.",
+      "Do not continue on assumed route confidence.",
+      "Do not treat one landmark as enough evidence."
+    ]
+  }
+}
+

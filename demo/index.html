@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nyx</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090b0f;
+      --panel: #111720;
+      --panel-2: #151d27;
+      --line: #2a3443;
+      --text: #f4f7fb;
+      --muted: #9aa8b8;
+      --amber: #f7b955;
+      --cyan: #60d5e8;
+      --green: #7ee39f;
+      --red: #ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.45 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--line);
+      background: #0c1016;
+    }
+    .brand {
+      font-size: 18px;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+    .status {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    main {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.9fr) minmax(360px, 1.3fr) minmax(280px, 1fr);
+      gap: 1px;
+      min-height: calc(100vh - 56px);
+      background: var(--line);
+    }
+    section {
+      background: var(--panel);
+      padding: 22px;
+      min-width: 0;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h2 {
+      font-size: 13px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+    .scenario-list {
+      display: grid;
+      gap: 10px;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      background: var(--panel-2);
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+    }
+    button:hover,
+    button.active {
+      border-color: var(--cyan);
+    }
+    .kicker {
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .title {
+      font-size: 30px;
+      line-height: 1.05;
+      margin: 8px 0 12px;
+    }
+    .muted { color: var(--muted); }
+    .meter {
+      height: 12px;
+      border: 1px solid var(--line);
+      background: #0b0f15;
+      margin: 8px 0 20px;
+    }
+    .meter > div {
+      height: 100%;
+      width: 42%;
+      background: linear-gradient(90deg, var(--red), var(--amber), var(--green));
+    }
+    .state-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: #0d131b;
+    }
+    .state {
+      color: var(--amber);
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+    ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+    }
+    li { margin: 8px 0; }
+    .forbidden {
+      color: var(--red);
+    }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      color: #c4cfdb;
+      background: #0a0e14;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      overflow: auto;
+    }
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr; }
+      section { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Nyx</div>
+    <div class="status">Local-first orientation drill · no GPS · no comms · no cloud</div>
+  </header>
+  <main>
+    <section>
+      <h2>Scenario</h2>
+      <div id="scenarioList" class="scenario-list"></div>
+    </section>
+
+    <section>
+      <div class="kicker">Denied Environment</div>
+      <h1 id="scenarioTitle" class="title">Loading...</h1>
+      <p id="scenarioSummary" class="muted"></p>
+
+      <h2>Confidence</h2>
+      <div class="meter" aria-label="route confidence">
+        <div id="meterFill"></div>
+      </div>
+
+      <div class="state-card">
+        <div id="state" class="state">HOLD</div>
+        <p id="why"></p>
+        <h2>Next</h2>
+        <ul id="next"></ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Do Not Claim</h2>
+      <ul id="forbidden" class="forbidden"></ul>
+
+      <h2 style="margin-top:28px">Raw Drill Card</h2>
+      <pre id="raw" class="mono"></pre>
+    </section>
+  </main>
+
+  <script>
+    const scenarioList = document.querySelector("#scenarioList");
+    const scenarioTitle = document.querySelector("#scenarioTitle");
+    const scenarioSummary = document.querySelector("#scenarioSummary");
+    const meterFill = document.querySelector("#meterFill");
+    const state = document.querySelector("#state");
+    const why = document.querySelector("#why");
+    const next = document.querySelector("#next");
+    const forbidden = document.querySelector("#forbidden");
+    const raw = document.querySelector("#raw");
+
+    function renderScenario(scenario, index) {
+      document.querySelectorAll("button").forEach((button, i) => {
+        button.classList.toggle("active", i === index);
+      });
+      scenarioTitle.textContent = scenario.title;
+      scenarioSummary.textContent = scenario.summary;
+      meterFill.style.width = `${Math.max(5, Math.min(100, scenario.route_confidence * 100))}%`;
+      state.textContent = scenario.card.status;
+      why.textContent = scenario.card.why;
+      next.innerHTML = scenario.card.next_actions.map(item => `<li>${item}</li>`).join("");
+      forbidden.innerHTML = scenario.card.forbidden_actions.map(item => `<li>${item}</li>`).join("");
+      raw.textContent = JSON.stringify(scenario, null, 2);
+    }
+
+    fetch("/api/scenarios")
+      .then(response => response.json())
+      .then(payload => {
+        payload.scenarios.forEach((scenario, index) => {
+          const button = document.createElement("button");
+          button.innerHTML = `<strong>${scenario.title}</strong><br><span class="muted">${scenario.card.status}</span>`;
+          button.addEventListener("click", () => renderScenario(scenario, index));
+          scenarioList.appendChild(button);
+        });
+        renderScenario(payload.scenarios[0], 0);
+      });
+  </script>
+</body>
+</html>
+

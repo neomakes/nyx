@@ -1,0 +1,28 @@
+{
+  "id": "uncertain-contact",
+  "title": "Uncertain Heat Contact",
+  "summary": "A weak contact appears in a low-confidence scene. The drill keeps the card conservative.",
+  "route_confidence": 0.46,
+  "signals": {
+    "gps": "unavailable",
+    "comms": "unavailable",
+    "cloud": "unavailable",
+    "contact": "unclassified",
+    "confidence": "low"
+  },
+  "card": {
+    "status": "HOLD / VERIFY",
+    "why": "The contact is not reliable enough to classify. The correct output is a bounded verification step, not an identity or hazard claim.",
+    "next_actions": [
+      "Hold position and keep distance.",
+      "Collect a second angle or independent cue.",
+      "Mark the observation for handoff if confidence does not improve."
+    ],
+    "forbidden_actions": [
+      "Do not identify the contact as a person.",
+      "Do not identify the contact as a hazard.",
+      "Do not clear entry from this evidence."
+    ]
+  }
+}
+
