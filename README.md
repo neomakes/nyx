@@ -4,7 +4,7 @@
 
 | 착용 사진 | 형상 사진 |
 |---|---|
-| ![Nyx wearable demo photo](demo/assets/nyx-wear-photo.jpg) | ![Nyx on-device AI concept](demo/assets/nyx-main.png) |
+| ![Nyx wearable demo photo](demo/assets/nyx-wear-photo-card.jpg) | ![Nyx on-device AI concept](demo/assets/nyx-main-card.jpg) |
 
 > GPS가 끊기고, 통신이 약해지고, 공간이 반복될 때  
 > Nyx는 대원에게 “계속 가라”가 아니라 **다시 확인할 기준점**을 줍니다.
