@@ -1,6 +1,6 @@
 # Nyx
 
-![Nyx demo video screenshot](demo/assets/nyx-demo-field-view.png)
+![Nyx demo video screenshot](demo/assets/nyx-demo-field-view-v2.png)
 
 | 착용 사진 | 형상 사진 |
 |---|---|
