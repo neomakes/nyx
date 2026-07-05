@@ -11,6 +11,11 @@
 
 Nyx는 GPS와 통신이 끊긴 지하, 도심, 참호 작전에서 전방 대원이 경로, 접촉, 인계 판단을 잃지 않게 하는 온디바이스 AI 코파일럿입니다.
 
+| 데모 시나리오 | 장면 |
+|---|---|
+| 미확인 열원 감지 후 급조폭발물 의심 | <img src="demo/assets/scenarios/scenario-1-1.png" alt="Scenario 1 step 1" width="31%"> <img src="demo/assets/scenarios/scenario-1-2.png" alt="Scenario 1 step 2" width="31%"> <img src="demo/assets/scenarios/scenario-1-3.png" alt="Scenario 1 step 3" width="31%"> |
+| 실시간 퇴로 확보 후 평면도 업데이트 | <img src="demo/assets/scenarios/scenario-2-1.png" alt="Scenario 2 step 1" width="47%"> <img src="demo/assets/scenarios/scenario-2-2.png" alt="Scenario 2 step 2" width="47%"> |
+
 Nyx는 전술 지휘 체계가 아닙니다. 사람, 위협, 무기, 위험물, 진입 가능 여부를
 식별하거나 확정하지 않습니다. 이 공개 레포는 **신호가 약한 공간에서 과신을 막는
 인터페이스 패턴**을 보여주는 D4D 제출용 데모입니다.
